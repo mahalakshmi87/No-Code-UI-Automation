@@ -1,0 +1,5 @@
+/*
+ * This code is for Internal Salesforce use only, and subject to change without notice.
+ * Customers shouldn't reference this file in any web pages.
+ */
+body{background-color:#fff;font-size:71%}body.knowledgeTab,body.ChatterPage{font-size:.75em;padding:15px 12px}.highlight td,.highlight th{background-color:#f3f3ec}.list td,.list th,body.oldForecast .list .last td,body.oldForecast .list .last th{padding:4px 2px 4px 5px;color:#333;border-bottom:1px solid #e9e8df}.helpOrb{color:var(--slds-text-color_inverse,#4B4F56);background-image:url(/img/help/helpOrbsDesktop.gif);background-position:0 0;width:7px;height:7px}.detailList .helpOrb{top:3px;right:-8px}.editPage .detailList .helpOrb{right:-12px}.lookupNotAvailable{font-weight:bold;font-size:1.3em;margin:10px}body>.bRelatedList>.listRelatedObject>.bPageBlock.brandSecondaryBrd.secondaryPalette>.pbBody,body>.bRelatedList>.noStandardTab>.bPageBlock.brandSecondaryBrd.secondaryPalette>.pbBody{overflow-x:auto;min-height:.0001%}.searchMoreOptionsOverlay{top:-50px !important}

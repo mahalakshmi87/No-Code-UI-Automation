@@ -1,0 +1,5 @@
+/*
+ * This code is for Internal Salesforce use only, and subject to change without notice.
+ * Customers shouldn't reference this file in any web pages.
+ */
+html body.sfdcBody{font-family:'Helvetica';color:#3c3d3e;background:none transparent;margin:0;padding:10px 20px 0 20px;height:100%;overflow-x:auto;overflow-y:auto !important;-webkit-overflow-scrolling:touch}html{overflow:auto;-webkit-overflow-scrolling:touch}

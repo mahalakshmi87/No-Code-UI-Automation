@@ -1,0 +1,60 @@
+<html lang="en" data-ember-extension="1">
+<head>
+    <script>
+    var cmpId = "";
+    var imageSrc = "https://maps.googleapis.com/maps/api/staticmap?cache=218.0&size=354x199&center=4215+Exchange+Ave+Vernon+California+90058-2604+United+States&maptype=roadmap&format=png&scale=1&zoom=14&markers=color%3Ared%7C4215+Exchange+Ave+Vernon+California+90058-2604+United+States&language=en-US&key=AIzaSyAnsUgPM5XmaLKYqFVfdP1TmuiOzBhtSdA&signature=9E9asBernSpWdmnga7mG5YUNMMk=";
+    function showCanvas() {    
+        //post the result back to the caller component
+        var postMessageEvent = {};    
+        postMessageEvent.event = 'lightning:staticMapLoaded';
+        postMessageEvent.arguments = {};
+                
+        //add component id to the data
+        postMessageEvent.arguments.cmpId = cmpId;     
+        
+        window.parent.postMessage(JSON.stringify(postMessageEvent), '*');
+        
+    }
+   
+    function onMessageReceived(message) {        
+        if (!message || !message.data){
+            return;
+        } 
+        
+        var data = JSON.parse(message.data);
+        var args = data.arguments;
+        
+        if (!args){
+            return;
+        }
+        
+        cmpId = args.cmpId;
+        
+        if (!cmpId || cmpId.trim().length === 0){
+            return;
+        }    
+        switch (data.event) {
+            case 'loadingMap':
+                var image = document.querySelector("#googleImage");
+                image.onload = showCanvas;
+                image.onerror = function(e) {
+                    console.log(e);
+                }
+                image.src = imageSrc;
+                break;
+        }
+    };
+    
+    if (window.addEventListener){
+        addEventListener("message", onMessageReceived, false);
+    } else {
+        attachEvent("onmessage", onMessageReceived);
+    }           
+    
+    </script>
+</head>
+
+<body style="margin: 0px;overflow:hidden;">
+    <img src="" alt="Map" width="354" height="199" title="Map" id="googleImage">
+</body>
+</html>

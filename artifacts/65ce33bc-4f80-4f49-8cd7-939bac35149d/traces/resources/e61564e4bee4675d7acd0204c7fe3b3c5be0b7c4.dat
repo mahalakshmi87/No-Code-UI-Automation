@@ -1,0 +1,11 @@
+(function(sl){
+$A.componentService.addComponentClass("markup://forceChatter:contentFileSize",function() {
+return {
+  "meta":{
+    "name":"forceChatter$contentFileSize",
+    "extends":"markup://aura:component"
+  }
+};
+},{sl:sl,sa:{li:2,cn:1},en:{li:9,cn:2}});
+$A.componentService.addComponent("markup://forceChatter:contentFileSize",{"xs":"I","descriptor":"markup://forceChatter:contentFileSize","ad":[["body","aura://Aura.Component[]","G",false,[]],["record","apex://SObject","I",false,null],["recordLabel","aura://String","I",false],["value","aura://Long","I",false,null]],"i":["markup://force:hasRecord"],"fa":[{"descriptor":"body","value":[{"componentDef":{"descriptor":"markup://forceChatter:fileSize"},"localId":"fileSize","attributes":{"values":{"bytes":{"descriptor":"bytes","value":{"exprType":"FUNCTION","code":"function(cmp,fn){return (fn.ne(cmp.get(\"v.record.ContentSizeLong\"),null)?cmp.get(\"v.record.ContentSizeLong\"):(fn.ne(cmp.get(\"v.record.ContentSize\"),null)?cmp.get(\"v.record.ContentSize\"):cmp.get(\"v.record.BodyLength\")));}","args":[{"exprType":"PROPERTY","byValue":false,"target":"forceChatter:contentFileSize","path":"v.record.ContentSizeLong"},{"exprType":"PROPERTY","byValue":false,"target":"forceChatter:contentFileSize","path":"v.record.BodyLength"},{"exprType":"PROPERTY","byValue":false,"target":"forceChatter:contentFileSize","path":"v.record.ContentSize"}],"byValue":false}}}}}]}]});
+})('/auraCmpDef?_au=3921_sugnB3ryaJqAF0JE-wzn-Q&_c=false&_density=VIEW_TWO&_dfs=c&_ff=DESKTOP&_l=true&_l10n=en_US&_lrmc=551347034&_style=-174475480&aura.app=markup://one:one&aura.mode=PROD&_def=markup://forceChatter:contentFileSize&_uid=584_uPV6BtP01UPsQ04qJwcP6g');

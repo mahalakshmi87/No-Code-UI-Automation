@@ -1,0 +1,11 @@
+(function(sl){
+$A.componentService.addComponentClass("markup://force:listViewManagerGridWrapText",function() {
+return {
+  "meta":{
+    "name":"force$listViewManagerGridWrapText",
+    "extends":"markup://ui:outputText"
+  }
+};
+},{sl:sl,sa:{li:2,cn:1},en:{li:9,cn:2}});
+$A.componentService.addComponent("markup://force:listViewManagerGridWrapText",{"xs":"I","descriptor":"markup://force:listViewManagerGridWrapText","st":{"descriptor":"css://force.listViewManagerGridWrapText","co":".forceListViewManagerGridWrapText{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}","cl":"forceListViewManagerGridWrapText"},"su":"markup://ui:outputText","ad":[["body","aura://Aura.Component[]","G",false,[]],["class","aura://String","G",false],["dir","aura://String","I",false,"ltr"],["namespaceOverride","aura://String","I",false],["actionable","aura://Boolean","I",false,true],["role","aura://String","I",false],["ariaDescribedBy","aura://String","PP",false,""],["value","aura://String","G",true],["visible","aura://Boolean","I",false,true],["displayValue","aura://String","I",false],["tabIndex","aura://Integer","I",false],["title","aura://String","G",false]],"re":[{"ed":"markup://ui:click","n":"click","xs":"G"},{"ed":"markup://ui:dblclick","n":"dblclick","xs":"G"},{"ed":"markup://ui:mousedown","n":"mousedown","xs":"G"},{"ed":"markup://ui:mousemove","n":"mousemove","xs":"G"},{"ed":"markup://ui:mouseout","n":"mouseout","xs":"G"},{"ed":"markup://ui:mouseover","n":"mouseover","xs":"G"},{"ed":"markup://ui:mouseup","n":"mouseup","xs":"G"}],"fa":[{"descriptor":"class","value":"forceListViewManagerGridWrapText"}]});
+})('/auraCmpDef?_au=3921_sugnB3ryaJqAF0JE-wzn-Q&_c=false&_density=VIEW_TWO&_dfs=c&_ff=DESKTOP&_l=true&_l10n=en_US&_lrmc=551347034&_style=-174475480&aura.app=markup://one:one&aura.mode=PROD&_def=markup://force:listViewManagerGridWrapText&_uid=573_DSaqFDkfYdmIsZsop0K4KQ');

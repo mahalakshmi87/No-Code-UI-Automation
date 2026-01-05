@@ -1,0 +1,15 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Example Feature', () => {
+
+  test('test transportation scenario', async ({ page }) => {
+    // When the user enters username as "apiuserplaywright@onelineage.com.sit"
+    await page.getByLabel('Username').fill('apiuserplaywright@onelineage.com.sit');
+    // And the user enters password as "Lineage@789"
+    await page.getByLabel('Password').fill('Lineage@789');
+    // And the user clicks on "Log in to Sandbox" button
+    await page.getByRole('button', { name: 'Log In to Sandbox' }).click();
+    // And the text "SIT" should be visible on the home page
+    await expect(page.getByRole('text', { name: 'text' })).toBeVisible();
+  });
+});
