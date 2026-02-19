@@ -24,10 +24,26 @@ Feature: Create New Opportunity with Transportation Record Type
     And the user waits for the New Opportunity dialog to appear
     Then the New Opportunity record type selection modal should be visible
 
-    # Select Transportation Record Type
-    When the user clicks on the radio button left to the "Transportation"
-    And the user waits for 30 seconds
+    # Select Transportation Record Type (with visual verification)
+    When the user selects the "Transportation" radio option
+    # Waiting for Salesforce Lightning to process the selection and render visual update
+    And the user waits for 1 second
     Then the "Transportation" record type option should be selected
+    # The radio button should now show bright blue filled dot with outer circle
+    # The Next button should be enabled (bright blue)
+    When the user clicks on "Next" button
+    # Waiting for modal to close and form to appear
+    And the user waits for 3 seconds
+
+    # Fill in New Opportunity Form
+    Then the New Opportunity form should be displayed
+    When the user enters "Test Transportation Opportunity" in the "Opportunity Name" field
+    And the user enters "50000" in the "Amount" field
+    And the user selects "Prospecting" from the "Stage" dropdown
+    And the user enters the current date plus 30 days in the "Close Date" field
+    And the user clicks on "Save" button
+    And the user waits for 3 seconds
+    Then the new opportunity should be created successfully
 
   Scenario: Verify all record type options are available
     Given the user is on the Salesforce login page

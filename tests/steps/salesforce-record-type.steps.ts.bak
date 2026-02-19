@@ -1,0 +1,11 @@
+/**
+ * DEPRECATED: This file has been replaced by salesforce.steps.ts
+ * 
+ * All Salesforce record type step definitions are now in:
+ * tests/steps/salesforce.steps.ts
+ * 
+ * This file is kept for reference only and is not used.
+ */
+
+// This file is deprecated - use salesforce.steps.ts instead
+export const DEPRECATED = true;

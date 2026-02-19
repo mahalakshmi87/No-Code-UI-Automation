@@ -62,83 +62,176 @@ export class SelectRecordTypeTool extends BaseTool<SelectRecordTypeParams, Selec
     try {
       const recordTypeText = params.recordType.trim();
 
-      // Combined script to find and click the radio button in one go
-      // This handles various Salesforce Lightning DOM structures
+      // Enhanced script with comprehensive strategies and proper event handling
       const clickRecordTypeScript = `
-        (function() {
+        (async function() {
           const targetText = "${recordTypeText}";
+          let selectedRadio = null;
+          let method = '';
           
-          // Strategy 1: Look for slds-radio labels (Lightning Design System)
-          const sldsLabels = document.querySelectorAll('label.slds-radio');
-          for (const label of sldsLabels) {
-            const labelSpan = label.querySelector('span.slds-form-element__label');
-            if (labelSpan && labelSpan.textContent.trim() === targetText) {
-              const radio = label.querySelector('input[type="radio"]');
-              if (radio) {
-                radio.click();
-                return { success: true, method: 'slds-radio', id: radio.id };
+          console.log('🔍 Looking for record type: ' + targetText);
+          
+          // Strategy 1: Look for exact label text match (Lightning Design System)
+          const labels = Array.from(document.querySelectorAll('label'));
+          console.log('📋 Found ' + labels.length + ' labels');
+          
+          for (const label of labels) {
+            const text = label.textContent?.trim() || '';
+            console.log('📝 Checking label text: "' + text.substring(0, 50) + '"');
+            
+            if (text.startsWith(targetText)) {
+              console.log('✅ Found matching label: "' + text + '"');
+              const radioInput = label.querySelector('input[type="radio"]');
+              
+              if (radioInput) {
+                selectedRadio = radioInput;
+                method = 'label-exact-match';
+                console.log('✅ Found radio input for ' + targetText);
+                break;
               }
             }
           }
           
-          // Strategy 2: Look for any label/radio pair with matching text
-          const allLabels = document.querySelectorAll('label');
-          for (const label of allLabels) {
-            const text = label.textContent || '';
-            // Check if label text starts with the target (handles "Transportation\\nTo be used...")
-            if (text.trim().startsWith(targetText)) {
-              const radio = label.querySelector('input[type="radio"]');
-              if (radio) {
-                radio.click();
-                return { success: true, method: 'label-text', id: radio.id };
-              }
-              // Try finding radio by for attribute
-              const forId = label.getAttribute('for');
-              if (forId) {
-                const radio = document.getElementById(forId);
-                if (radio && radio.type === 'radio') {
-                  radio.click();
-                  return { success: true, method: 'label-for', id: forId };
-                }
-              }
-            }
-          }
-          
-          // Strategy 3: Look for radio buttons near text containing the target
-          const allText = document.body.innerText;
-          if (allText.includes(targetText)) {
-            // Find all radio buttons and check their associated text
-            const radios = document.querySelectorAll('input[type="radio"]');
-            for (const radio of radios) {
-              // Check parent elements for the text
-              let parent = radio.parentElement;
-              for (let i = 0; i < 5 && parent; i++) {
-                if (parent.textContent && parent.textContent.trim().startsWith(targetText)) {
-                  radio.click();
-                  return { success: true, method: 'parent-text', id: radio.id };
-                }
-                parent = parent.parentElement;
-              }
-            }
-          }
-          
-          // Strategy 4: Look in the changeRecordType modal specifically
-          const modal = document.querySelector('.forceChangeRecordType, [class*="changeRecordType"]');
-          if (modal) {
-            const labels = modal.querySelectorAll('label');
+          // Strategy 2: Look for any label/radio pair with matching text (case-insensitive)
+          if (!selectedRadio) {
+            console.log('⏭️ Strategy 1 failed, trying Strategy 2...');
+            
             for (const label of labels) {
-              if (label.textContent && label.textContent.includes(targetText)) {
-                const radio = label.querySelector('input[type="radio"]') || 
-                              label.previousElementSibling?.querySelector('input[type="radio"]');
-                if (radio) {
-                  radio.click();
-                  return { success: true, method: 'modal-label', id: radio.id };
+              const text = label.textContent?.trim() || '';
+              if (text.toLowerCase().startsWith(targetText.toLowerCase())) {
+                console.log('✅ Found case-insensitive match: "' + text + '"');
+                selectedRadio = label.querySelector('input[type="radio"]');
+                
+                if (!selectedRadio) {
+                  const forId = label.getAttribute('for');
+                  if (forId) {
+                    selectedRadio = document.getElementById(forId);
+                    if (selectedRadio && selectedRadio.type !== 'radio') {
+                      selectedRadio = null;
+                    }
+                  }
+                }
+                method = 'label-case-insensitive';
+                if (selectedRadio) break;
+              }
+            }
+          }
+          
+          // Strategy 3: Find radio buttons and check parent container text
+          if (!selectedRadio) {
+            console.log('⏭️ Strategy 2 failed, trying Strategy 3...');
+            const radios = Array.from(document.querySelectorAll('input[type="radio"]'));
+            console.log('📻 Found ' + radios.length + ' radio buttons');
+            
+            for (const radio of radios) {
+              let parent = radio.closest('.changeRecordTypeOption, [class*="option"], [role="group"], label');
+              if (!parent) parent = radio.parentElement;
+              
+              if (parent && parent.textContent) {
+                const parentText = parent.textContent.toLowerCase();
+                if (parentText.includes(targetText.toLowerCase())) {
+                  console.log('✅ Found matching parent text');
+                  selectedRadio = radio;
+                  method = 'parent-container';
+                  break;
                 }
               }
             }
           }
           
-          return { success: false, error: 'Record type not found: ' + targetText };
+          // Strategy 4: Direct search in modal by looking at all text nodes
+          if (!selectedRadio) {
+            console.log('⏭️ Strategy 3 failed, trying Strategy 4...');
+            const modal = document.querySelector('.forceChangeRecordType, [class*="changeRecordType"], [data-aura-class*="Modal"], [role="dialog"]');
+            
+            if (modal) {
+              const radios = Array.from(modal.querySelectorAll('input[type="radio"]'));
+              console.log('🔎 Found ' + radios.length + ' radios in modal');
+              
+              for (const radio of radios) {
+                const container = radio.closest('[class*="option"], div[data-aura-rendered-by]');
+                if (container && container.textContent.toLowerCase().includes(targetText.toLowerCase())) {
+                  console.log('✅ Found via modal search');
+                  selectedRadio = radio;
+                  method = 'modal-search';
+                  break;
+                }
+              }
+            }
+          }
+          
+          if (!selectedRadio) {
+            console.log('❌ Could not find record type: ' + targetText);
+            return { success: false, error: 'Record type not found: ' + targetText };
+          }
+          
+          console.log('📍 Selected radio using method: ' + method);
+          
+          // Execute the click with proper event handling
+          try {
+            // Step 1: Set checked property
+            selectedRadio.checked = true;
+            console.log('✅ Set checked = true');
+            
+            // Step 2: Dispatch input event
+            const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+            selectedRadio.dispatchEvent(inputEvent);
+            console.log('✅ Dispatched input event');
+            
+            // Step 3: Dispatch change event (critical for Salesforce Lightning)
+            const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+            selectedRadio.dispatchEvent(changeEvent);
+            console.log('✅ Dispatched change event');
+            
+            // Step 4: Dispatch click event
+            const clickEvent = new MouseEvent('click', { 
+              bubbles: true, 
+              cancelable: true,
+              view: window 
+            });
+            selectedRadio.dispatchEvent(clickEvent);
+            console.log('✅ Dispatched click event');
+            
+            // Step 5: Also dispatch on the parent label if it exists
+            const parentLabel = selectedRadio.closest('label');
+            if (parentLabel) {
+              parentLabel.dispatchEvent(clickEvent);
+              console.log('✅ Dispatched click event on parent label');
+            }
+            
+            // Step 6: Wait for Salesforce to process the events
+            await new Promise(resolve => setTimeout(resolve, 800));
+            console.log('⏳ Waited 800ms for event processing');
+            
+            // Step 7: Verify the selection was registered
+            const isStillChecked = selectedRadio.checked;
+            const parentText = parentLabel?.textContent?.trim() || selectedRadio.parentElement?.textContent?.trim() || '';
+            const verified = isStillChecked && parentText.includes(targetText);
+            
+            if (verified) {
+              console.log('✅ Verified: Selection registered successfully');
+            } else {
+              console.log('⚠️ Warning: Selection may not be fully registered');
+            }
+            
+            // Step 8: Check if Next button is now enabled
+            const nextButton = Array.from(document.querySelectorAll('button'))
+              .find(btn => btn.textContent?.includes('Next'));
+            const nextEnabled = nextButton && !nextButton.hasAttribute('disabled');
+            console.log('🔘 Next button enabled: ' + nextEnabled);
+            
+            return { 
+              success: true, 
+              method: method, 
+              id: selectedRadio.id,
+              isChecked: isStillChecked,
+              verified: verified,
+              nextEnabled: nextEnabled
+            };
+          } catch (e) {
+            console.log('❌ Error during click: ' + e.message);
+            return { success: false, error: 'Failed to click radio: ' + e.message };
+          }
         })()
       `;
 

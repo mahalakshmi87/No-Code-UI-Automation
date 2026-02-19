@@ -60,6 +60,16 @@ interface StepPattern {
  * Step patterns ordered by specificity (most specific first)
  */
 const STEP_PATTERNS: StepPattern[] = [
+  // ⭐ INDEX-BASED RADIO SELECTION (HIGHEST PRIORITY)
+  // Matches: "I click the last radio", "I click the first radio", "I click the 5th radio", etc.
+  {
+    name: 'click-radio-by-index',
+    pattern: /^I click (?:on |the )?(last|first|\d+)(?:st|nd|rd|th)? radio(?: (?:button|option))?$/i,
+    actionType: 'click',
+    groups: { target: '$1' }, // Capture "last", "first", "1", "5", etc.
+    confidence: 0.99, // Highest confidence - very specific pattern
+  },
+
   // Navigation patterns
   {
     name: 'navigate-to-url',
@@ -91,19 +101,12 @@ const STEP_PATTERNS: StepPattern[] = [
   },
 
   // Click patterns
-  {
-    name: 'click-radio-left-to',
-    pattern: /^(?:the user )?clicks? on (?:the )?radio button (?:left to|next to|near|for) (?:the )?["']?([^"']+)["']?$/i,
+   {
+    name: 'click-element-by-type',
+    pattern: /^I click (?:on |the )?["']?([^"']+)["']? (span|text|label|div|button|link|element|section)(?:\s+(?:text|element))?$/i,
     actionType: 'click',
-    groups: { target: 'radio button $1', value: '$1' },
-    confidence: 0.98,
-  },
-  {
-    name: 'select-radio-option',
-    pattern: /^(?:the user )?selects? (?:the )?["']?([^"']+)["']? (?:radio|option|record type)$/i,
-    actionType: 'click',
-    groups: { target: 'radio button $1', value: '$1' },
-    confidence: 0.95,
+    groups: { target: '$1' },
+    confidence: 0.92,
   },
   {
     name: 'click-the-element',

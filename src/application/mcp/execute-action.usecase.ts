@@ -563,16 +563,19 @@ export class ExecuteActionUseCase {
         // Check if this is a Salesforce record type radio button click
         // Patterns: "radio button left to the 'Transportation'", "Transportation radio", etc.
         const descLower = elementDesc.toLowerCase();
+        const recordTypeFromDesc = this.extractRecordTypeFromDescription(elementDesc);
         const isRecordTypeRadio = (descLower.includes('radio') || descLower.includes('record type')) &&
-          (action.value || this.extractRecordTypeFromDescription(elementDesc));
+          (action.value || recordTypeFromDesc);
 
-        if (isRecordTypeRadio) {
+        if (isRecordTypeRadio && (action.value || recordTypeFromDesc)) {
           // Extract the record type name from description or value
-          const recordType = action.value || this.extractRecordTypeFromDescription(elementDesc);
+          const recordType = action.value || recordTypeFromDesc;
           if (recordType) {
             this.logger.info('Detected Salesforce record type radio button click, using SelectRecordTypeTool', {
               recordType,
               originalDesc: elementDesc,
+              fromValue: !!action.value,
+              fromDescription: !!recordTypeFromDesc,
             });
             return this.selectRecordTypeTool!.execute({
               recordType,
